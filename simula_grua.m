@@ -25,7 +25,9 @@ flecha = [];
 
 err_beta=0;
 ref_beta=50*pi/180;
-Kp=500;
+Kp_beta=50;
+Kd_beta=300;
+k=1;
 
 %Simulación
 for t_actual=0:Ts:Tmax
@@ -51,7 +53,15 @@ for t_actual=0:Ts:Tmax
     
     err_beta_old=err_beta;
     err_beta=ref_beta-beta_actual;
-    Tb=Kp*err_beta;
+    
+    if k==1, vel_err_beta=0; % velocidad del error (0 para 1a iteracion)
+    else vel_err_beta=(err_beta-err_beta_old)/Ts;
+    end
+    
+   
+    Tb=Kp_beta*err_beta+Kd_beta*vel_err_beta;
+    k=k+1;
+    
     %Ejemplo para almacenar valores
     alpha = [alpha; alpha_actual];
     beta = [beta; beta_actual];
@@ -68,5 +78,6 @@ subplot(3,1,2)
 plot(beta*180/pi); title('Azimut [grados]') 
 subplot(3,1,3)
 plot(flecha);  title('Desplazamiento flecha [m]')
+
 
 
