@@ -7,7 +7,7 @@ x0 = [0 0*pi/180 0 0 0 0];
 Ts = 1;
 
 %Tiempo de simulación
-Tmax = 40;
+Tmax = 50;
 
 %Torques y fuerza iniciales
 Ta = 0;
@@ -26,9 +26,9 @@ flecha = [];
 int_err_beta=0;
 err_beta=0;
 ref_beta=50*pi/180;
-Kp_beta=170000;
+Kp_beta=150000;
 Kd_beta=1000000;
-Ki_beta=5000;
+Ki_beta=0;
 k=1;
 
 %Simulación
@@ -64,7 +64,7 @@ for t_actual=0:Ts:Tmax
     
     int_err_beta=int_err_beta+abs(err_beta);
    
-    if err_beta<100
+    if err_beta<0.5
         int_err_beta=0;
     end
 
@@ -84,15 +84,16 @@ for t_actual=0:Ts:Tmax
 end
 
 %Graficando alpha
-% 
-% figure(1)
-% subplot(3,1,1)
-% plot(alpha*180/pi); title('Elevacion [grados]')
-% subplot(3,1,2)
-% plot(beta*180/pi); title('Azimut [grados]') 
-% subplot(3,1,3)
-% plot(flecha);  title('Desplazamiento flecha [m]')
 
-plot(beta*180/pi); title('Azimut [grados]')
+figure(1)
+subplot(3,1,1)
+plot(alpha*180/pi); title('Elevacion [grados]')
+subplot(3,1,2)
+plot(beta*180/pi); title('Azimut [grados]') 
+subplot(3,1,3)
+plot(flecha);  title('Desplazamiento flecha [m]')
+
+
+plot(beta*180/pi); title('Azimut [grados]') 
 
 
