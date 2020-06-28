@@ -1,19 +1,19 @@
 close all
 clear all
 % SIMULACION DE GRUA EN LAZO ABIERTO CON ENTRADA SOLO EN ELEVACION
-x0 = [50*pi/180 0*pi/180 6 0 0 0];
+x0 = [90*pi/180 0*pi/180 5 0 0 0];
 
 %Tiempo de muestreo por defecto
 Ts = 1;
 
 %Tiempo de simulación
-Tmax = 600;
+Tmax = 1000;
 
 %Torques y fuerza iniciales
 Ta = 9.82*cos(x0(1)) * (1000*5 + 600*(10+6/2)+500*(10+6));
     
 Tb = 0;
-Ff = 0;
+Ff = 0.727272* 9.82*sin(x0(1)) * (  600+500);
 
 %Primero se crean los sensores
 sensores = NewSensors(Ts,Tmax,x0);
@@ -26,10 +26,10 @@ flecha = [];
 
 int_err_beta=0;
 err_beta=0;
-ref_beta=50*pi/180;
+ref_beta=0*pi/180;
 Kp_beta=170000;
 Kd_beta=1000000;
-Ki_beta=5000;
+Ki_beta=10000;
 k=1;
 
 int_err_alpha=0;
@@ -37,11 +37,19 @@ err_alpha=0;
 ref_alpha=90*pi/180;
 Kp_alpha=300000;
 Kd_alpha=1000000;
-Ki_alpha=0;
+Ki_alpha=1000000;
+
+
+Tamax=0;
+
+int_err_flecha=0;
+err_flecha=0;
+ref_flecha=2;
+Kp_flecha=900;
+Kd_flecha=1000;
+Ki_flecha=100;
 
 error=[];
-
-ref_flecha=6;
 
 %Simulación
 for t_actual=0:Ts:Tmax
@@ -102,17 +110,39 @@ for t_actual=0:Ts:Tmax
         + 9.82*cos(ref_alpha) * (1000*5 + 600*(10+6/2)+500*(10+6));
     
   
-    disp(T)
+%     disp(err_alpha)
     
-      
+%     if Ta>Tamax
+%         Tmax=Ta;
+%     end
+%       
+
+%  % flecha
+    err_flecha_old=err_flecha;
+    err_flecha=ref_flecha-flecha_actual;
+    
+    if k==1, vel_err_flecha=0; % velocidad del error (0 para 1a iteracion)
+    else vel_err_flecha=(err_flecha-err_flecha_old)/Ts;
+    end
+    
+   
+    int_err_flecha=int_err_flecha+abs(err_flecha);
+   
+    if err_flecha<10
+        int_err_flecha=0;
+    end
+
+    Ff=(Kp_flecha*err_flecha+Kd_flecha*vel_err_flecha+Ki_flecha*int_err_flecha)...
+        + 0.727272*9.82*sin(ref_alpha) * (600+500); %factor para compensar roce
     
     
     %Ejemplo para almacenar valores
     alpha = [alpha; alpha_actual];
     beta = [beta; beta_actual];
     flecha = [flecha; flecha_actual];
-    error=[error;err_alpha];
-    
+    error=[error;err_flecha];
+    disp(ref_alpha);
+
      k=k+1;
     
 end

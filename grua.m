@@ -29,17 +29,17 @@ aux2=(12*(Tb-kr*x(5)-(1/12)*x(5)*(-3*(Lb^2*(4*M+Mb+4*Mf)+ ...
 
 aux3=(1/(3*(4*M+Mf)))*(12*Ff-12*g*M*sin(x(1))-6*g*Mf*sin(x(1))-12*kl*x(6));
 
-%xprima(1)=0;
-%xprima(2)=0;
-xprima(3)=0;
-%xprima(4)=0;
-%xprima(5)=0;
-xprima(6)=0;
+% xprima(1)=0;
+% xprima(2)=0;
+% %  xprima(3)=0;
+% xprima(4)=0;
+% xprima(5)=0;
+%   xprima(6)=0;
 xprima(1)=x(4);
 xprima(2)=x(5);
-%xprima(3)=x(6);
-xprima(4)=aux1;
+xprima(3)=x(6);
+ xprima(4)=aux1;
 xprima(5)=aux2;
-%xprima(6)=aux3;
+xprima(6)=aux3;
 
 xprima=xprima';
