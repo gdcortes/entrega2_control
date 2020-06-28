@@ -35,8 +35,8 @@ k=1;
 int_err_alpha=0;
 err_alpha=0;
 ref_alpha=70*pi/180;
-Kp_alpha=300000;
-Kd_alpha=3000000;
+Kp_alpha=400000;
+Kd_alpha=4000000;
 Ki_alpha=1000000;
 
 
@@ -46,7 +46,7 @@ int_err_flecha=0;
 err_flecha=0;
 ref_flecha=2;
 Kp_flecha=5000;
-Kd_flecha=20000;
+Kd_flecha=30000;
 Ki_flecha=2000;
 
 error=[];
