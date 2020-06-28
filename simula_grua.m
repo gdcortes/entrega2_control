@@ -1,13 +1,13 @@
 close all
 clear all
 % SIMULACION DE GRUA EN LAZO ABIERTO CON ENTRADA SOLO EN ELEVACION
-x0 = [90*pi/180 0*pi/180 6 0 0 0];
+x0 = [70*pi/180 0*pi/180 6 0 0 0];
 
 %Tiempo de muestreo por defecto
 Ts = 1;
 
 %Tiempo de simulación
-Tmax = 600;
+Tmax = 1000;
 
 %Torques y fuerza iniciales
 Ta = 9.82*cos(x0(1)) * (1000*5 + 600*(10+6/2)+500*(10+6));
@@ -34,14 +34,18 @@ k=1;
 
 int_err_alpha=0;
 err_alpha=0;
-ref_alpha=30*pi/180;
-Kp_alpha=1000000;
+ref_alpha=40*pi/180;
+Kp_alpha=300000;
 Kd_alpha=1000000;
-Ki_alpha=0;
+Ki_alpha=1000000;
 
-error=[];
+
+Tamax=0;
 
 ref_flecha=6;
+
+
+error=[];
 
 %Simulación
 for t_actual=0:Ts:Tmax
@@ -102,9 +106,12 @@ for t_actual=0:Ts:Tmax
         + 9.82*cos(ref_alpha) * (1000*5 + 600*(10+6/2)+500*(10+6));
     
   
-    disp(err_alpha)
+%     disp(err_alpha)
     
-      
+%     if Ta>Tamax
+%         Tmax=Ta;
+%     end
+%       
     
     
     %Ejemplo para almacenar valores

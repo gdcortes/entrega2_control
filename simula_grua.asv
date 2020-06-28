@@ -7,7 +7,7 @@ x0 = [50*pi/180 0*pi/180 6 0 0 0];
 Ts = 1;
 
 %Tiempo de simulación
-Tmax = 300;
+Tmax = 600;
 
 %Torques y fuerza iniciales
 Ta = 9.82*cos(x0(1)) * (1000*5 + 600*(10+6/2)+500*(10+6));
@@ -34,8 +34,8 @@ k=1;
 
 int_err_alpha=0;
 err_alpha=0;
-ref_alpha=60*pi/180;
-Kp_alpha=1000000;
+ref_alpha=90*pi/180;
+Kp_alpha=300000;
 Kd_alpha=1000000;
 Ki_alpha=0;
 
@@ -102,7 +102,7 @@ for t_actual=0:Ts:Tmax
         + 9.82*cos(ref_alpha) * (1000*5 + 600*(10+6/2)+500*(10+6));
     
   
-    disp(err_alpha)
+    disp(T)
     
       
     
