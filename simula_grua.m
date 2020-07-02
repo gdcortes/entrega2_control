@@ -23,17 +23,17 @@ flecha = [];
 int_err_beta=0;
 err_beta=0;
 ref_beta=0*pi/180;
-Kp_beta=800000;
-Kd_beta=5500000;
-Ki_beta=30000;
+Kp_beta=800000; %% estaba en 800k
+Kd_beta=5500000; %% estaba en 5500000
+Ki_beta=28000; %% estaba en 30k
 k=1;
 
 int_err_alpha=0;
 err_alpha=0;
 ref_alpha=0*pi/180;
 Kp_alpha=3000000;
-Kd_alpha=15000000;
-Ki_alpha=20000;
+Kd_alpha=14200000; %% estaba en 15millones
+Ki_alpha=20000; %% estaba en 20k
 
 %%%%
 alpha_old=0;
@@ -109,9 +109,9 @@ for t_actual=0:Ts:Tmax
     
     %%%%%%
     if alpha_actual>alpha_old
-        Kp_alpha=3000000;
+        Kp_alpha=4000000;
     elseif alpha_actual<alpha_old
-        Kp_alpha=2000000;
+        Kp_alpha=2400000;
     end
     
     %%%%%%
