@@ -23,26 +23,26 @@ flecha = [];
 int_err_beta=0;
 err_beta=0;
 ref_beta=0*pi/180;
-Kp_beta=200000;
-Kd_beta=0;
-Ki_beta=0;
+Kp_beta=700000;
+Kd_beta=4000000;
+Ki_beta=1000;
 k=1;
 
 int_err_alpha=0;
 err_alpha=0;
 ref_alpha=0*pi/180;
-Kp_alpha=900000;
-Kd_alpha=3000000;
-Ki_alpha=10000;
+Kp_alpha=3000000;
+Kd_alpha=15000000;
+Ki_alpha=20000;
 
 
 
 int_err_flecha=0;
 err_flecha=0;
-ref_flecha=0;
-Kp_flecha=0;
-Kd_flecha=0;
-Ki_flecha=0;
+ref_flecha=1;
+Kp_flecha=5000;
+Kd_flecha=20000;
+Ki_flecha=100;
 
 
 
@@ -56,6 +56,9 @@ Ff = 0.727272* 9.82*sin(x0(1)) * (  600+500);
 error=[];
 
 J=0;
+J_alfa=0;
+J_beta=0;
+J_flecha=0;
 
 %Simulación
 for t_actual=0:Ts:Tmax
@@ -96,6 +99,9 @@ for t_actual=0:Ts:Tmax
     beta_actual=valores(2);
     flecha_actual = valores(3);
     
+    if beta_actual > pi
+        beta_actual= beta_actual-2*pi;
+    elseif beta_actual 
     
     % beta
     err_beta_old=err_beta;
@@ -108,7 +114,7 @@ for t_actual=0:Ts:Tmax
    
     int_err_beta=int_err_beta+abs(err_beta);
    
-    if err_beta<0.1
+    if err_beta<0.01
         int_err_beta=0;
     end
     Tb_old=Tb;
@@ -146,7 +152,7 @@ for t_actual=0:Ts:Tmax
    
     int_err_flecha=int_err_flecha+abs(err_flecha);
    
-    if err_flecha<10
+    if err_flecha<0.01
         int_err_flecha=0;
     end
     Ff_old=Ff;
@@ -163,6 +169,9 @@ for t_actual=0:Ts:Tmax
      
     if t_actual>=100
         J=J+ (err_alpha^2) + (err_beta^2) + (0.02*err_flecha^2) + (0.2*10^(-13)*(Ta-Ta_old)^2) + (0.2*10^(-13)*(Tb-Tb_old)^2) + (0.2*10^(-8)*(Ff-Ff_old)^2); 
+        J_alfa= J_alfa + (err_alpha^2) + (0.2*10^(-13)*(Ta-Ta_old)^2);
+        J_beta= J_beta +(err_beta^2)+ (0.2*10^(-13)*(Tb-Tb_old)^2);
+        J_flecha= J_flecha + (0.02*err_flecha^2) + (0.2*10^(-8)*(Ff-Ff_old)^2);
         if alpha_actual<-10*pi/180
             J=J+10000000;
         elseif alpha_actual>85*pi/180
@@ -180,6 +189,9 @@ end
 
 %Graficando alpha
 
+disp(J_alfa);
+disp(J_beta);
+disp(J_flecha);
 disp(J);
 
 figure(1)
