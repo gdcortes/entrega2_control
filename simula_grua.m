@@ -9,11 +9,7 @@ Ts = 1;
 %Tiempo de simulación
 Tmax = 300;
 
-%Torques y fuerza iniciales
-Ta = 9.82*cos(x0(1)) * (1000*5 + 600*(10+6/2)+500*(10+6));
-    
-Tb = 0;
-Ff = 0.727272* 9.82*sin(x0(1)) * (  600+500);
+
 
 %Primero se crean los sensores
 sensores = NewSensors(Ts,Tmax,x0);
@@ -26,28 +22,36 @@ flecha = [];
 
 int_err_beta=0;
 err_beta=0;
-ref_beta=10*pi/180;
+ref_beta=0*pi/180;
 Kp_beta=170000;
 Kd_beta=1000000;
-Ki_beta=10000;
+Ki_beta=1000;
 k=1;
 
 int_err_alpha=0;
 err_alpha=0;
-ref_alpha=70*pi/180;
-Kp_alpha=400000;
-Kd_alpha=4000000;
-Ki_alpha=1000000;
+ref_alpha=0*pi/180;
+Kp_alpha=3000000;
+Kd_alpha=15000000;
+Ki_alpha=20000;
 
 
-Tamax=0;
 
 int_err_flecha=0;
 err_flecha=0;
-ref_flecha=2;
+ref_flecha=1;
 Kp_flecha=5000;
-Kd_flecha=30000;
-Ki_flecha=2000;
+Kd_flecha=20000;
+Ki_flecha=10;
+
+
+
+%Torques y fuerza iniciales
+Ta = 9.82*cos(x0(1)) * (1000*5 + 600*(10+ref_flecha/2)+500*(10+ref_flecha));
+%Ta=0;  
+Tb = 0;
+Ff = 0.727272* 9.82*sin(x0(1)) * (  600+500);
+
 
 error=[];
 
@@ -56,12 +60,12 @@ J=0;
 %Simulación
 for t_actual=0:Ts:Tmax
     
-    if t_actual == 0
-        ref_alpha=0;
-        ref_beta=0;
-        ref_flecha=1;
+%     if t_actual == 0
+%         ref_alpha=0;
+%         ref_beta=0;
+%         ref_flecha=1;
     
-    elseif t_actual >= 100 && t_actual <200
+    if t_actual >= 100 && t_actual <200
             ref_alpha =75*pi/180;
             ref_beta=185*pi/180;
             ref_flecha=5;
@@ -77,11 +81,7 @@ for t_actual=0:Ts:Tmax
         
         
     
-    %Ejemplo de un control en el que se cambia
-    %el torque en alfa cuando t = 18[s]
-    %if t_actual >= 18
-     %   Ta = 0;
-    %end
+
     
     %Se actualizan los sensores y la planta
     %con los valores en los actuadores actuales
@@ -108,11 +108,11 @@ for t_actual=0:Ts:Tmax
    
     int_err_beta=int_err_beta+abs(err_beta);
    
-    if err_beta<10
+    if err_beta<0.01
         int_err_beta=0;
     end
     Tb_old=Tb;
-    Tb=Kp_beta*err_beta+Kd_beta*vel_err_beta+Ki_beta*int_err_beta;
+   Tb=Kp_beta*err_beta+Kd_beta*vel_err_beta+Ki_beta*int_err_beta;
     
     % alpha
     err_alpha_old=err_alpha;
@@ -124,21 +124,16 @@ for t_actual=0:Ts:Tmax
     
    
     int_err_alpha=int_err_alpha+abs(err_alpha);
-   
-    if err_alpha<10
+    
+    if err_alpha<0.01
         int_err_alpha=0;
     end
     Ta_old=Ta;
     Ta=(Kp_alpha*err_alpha+Kd_alpha*vel_err_alpha+Ki_alpha*int_err_alpha)...
-        + 9.82*cos(ref_alpha) * (1000*5 + 600*(10+6/2)+500*(10+6));
+       + 9.82*cos(ref_alpha) * (1000*5 + 600*(10+ref_flecha/2)+500*(10+ref_flecha));
     
   
-%     disp(err_alpha)
-    
-%     if Ta>Tamax
-%         Tmax=Ta;
-%     end
-%       
+
 
 %  % flecha
     err_flecha_old=err_flecha;
@@ -151,7 +146,7 @@ for t_actual=0:Ts:Tmax
    
     int_err_flecha=int_err_flecha+abs(err_flecha);
    
-    if err_flecha<10
+    if err_flecha<0.01
         int_err_flecha=0;
     end
     Ff_old=Ff;
@@ -164,7 +159,7 @@ for t_actual=0:Ts:Tmax
     beta = [beta; beta_actual];
     flecha = [flecha; flecha_actual];
     error=[error;err_flecha];
-    disp(ref_alpha);
+    
      
     if t_actual>=100
         J=J+ (err_alpha^2) + (err_beta^2) + (0.02*err_flecha^2) + (0.2*10^(-13)*(Ta-Ta_old)^2) + (0.2*10^(-13)*(Tb-Tb_old)^2) + (0.2*10^(-8)*(Ff-Ff_old)^2); 
@@ -195,8 +190,8 @@ plot(beta*180/pi); title('Azimut [grados]')
 subplot(3,1,3)
 plot(flecha);  title('Desplazamiento flecha [m]')
 
-%  figure(2)
-%  plot(error);
+%   figure(2)
+%    plot(error);
 
 
 
