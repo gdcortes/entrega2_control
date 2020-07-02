@@ -23,9 +23,9 @@ flecha = [];
 int_err_beta=0;
 err_beta=0;
 ref_beta=0*pi/180;
-Kp_beta=700000;
-Kd_beta=4000000;
-Ki_beta=1000;
+Kp_beta=800000;
+Kd_beta=5500000;
+Ki_beta=30000;
 k=1;
 
 int_err_alpha=0;
@@ -35,14 +35,17 @@ Kp_alpha=3000000;
 Kd_alpha=15000000;
 Ki_alpha=20000;
 
-
+%%%%
+alpha_old=0;
+alpha_actual=0;
+%%%%%
 
 int_err_flecha=0;
 err_flecha=0;
 ref_flecha=1;
-Kp_flecha=5000;
-Kd_flecha=20000;
-Ki_flecha=100;
+Kp_flecha=4000;
+Kd_flecha=5000; %%% estaba en 8k
+Ki_flecha=100; %%% estaba en 100
 
 
 
@@ -78,10 +81,15 @@ for t_actual=0:Ts:Tmax
         ref_flecha=1;
     end
         
-
+%      if ref_beta > pi
+%         ref_beta= ref_beta-2*pi;
+%     elseif ref_beta < -pi
+%         ref_beta=ref_beta+2*pi;
+%     end
         
-        
-        
+    %%%  
+    alpha_old=alpha_actual;
+    %%%%%
         
     
 
@@ -99,13 +107,31 @@ for t_actual=0:Ts:Tmax
     beta_actual=valores(2);
     flecha_actual = valores(3);
     
+    %%%%%%
+    if alpha_actual>alpha_old
+        Kp_alpha=3000000;
+    elseif alpha_actual<alpha_old
+        Kp_alpha=2000000;
+    end
+    
+    %%%%%%
+    
+    
     if beta_actual > pi
         beta_actual= beta_actual-2*pi;
-    elseif beta_actual 
+    elseif beta_actual < -pi
+        beta_actual=beta_actual+2*pi;
+    end
     
     % beta
     err_beta_old=err_beta;
     err_beta=ref_beta-beta_actual;
+    
+     if err_beta > pi
+        err_beta= err_beta-2*pi;
+    elseif beta_actual < -pi
+        err_beta=err_beta+2*pi;
+    end
     
     if k==1, vel_err_beta=0; % velocidad del error (0 para 1a iteracion)
     else vel_err_beta=(err_beta-err_beta_old)/Ts;
@@ -127,6 +153,7 @@ for t_actual=0:Ts:Tmax
     if k==1, vel_err_alpha=0; % velocidad del error (0 para 1a iteracion)
     else vel_err_alpha=(err_alpha-err_alpha_old)/Ts;
     end
+    
     
    
     int_err_alpha=int_err_alpha+abs(err_alpha);
@@ -197,6 +224,7 @@ disp(J);
 figure(1)
 subplot(3,1,1)
 plot(alpha*180/pi); title('Elevacion [grados]')
+axis([0 300 -5 ]);
 subplot(3,1,2)
 plot(beta*180/pi); title('Azimut [grados]') 
 subplot(3,1,3)

@@ -43,9 +43,9 @@ alpha_actual=0;
 int_err_flecha=0;
 err_flecha=0;
 ref_flecha=1;
-Kp_flecha=5000;
-Kd_flecha=20000;
-Ki_flecha=100;
+Kp_flecha=4000;
+Kd_flecha=5500; %%% estaba en 8k
+Ki_flecha=100; %%% estaba en 100
 
 
 
@@ -224,10 +224,13 @@ disp(J);
 figure(1)
 subplot(3,1,1)
 plot(alpha*180/pi); title('Elevacion [grados]')
+axis([0 300 -5 85]);
 subplot(3,1,2)
 plot(beta*180/pi); title('Azimut [grados]') 
+axis([0 300 -180 40]);
 subplot(3,1,3)
 plot(flecha);  title('Desplazamiento flecha [m]')
+axis([0 300 0 6]);
 
 %   figure(2)
 %    plot(error);
