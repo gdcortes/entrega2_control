@@ -23,9 +23,9 @@ flecha = [];
 int_err_beta=0;
 err_beta=0;
 ref_beta=0*pi/180;
-Kp_beta=700000;
-Kd_beta=4000000;
-Ki_beta=1000;
+Kp_beta=800000;
+Kd_beta=5500000;
+Ki_beta=30000;
 k=1;
 
 int_err_alpha=0;
@@ -35,7 +35,10 @@ Kp_alpha=3000000;
 Kd_alpha=15000000;
 Ki_alpha=20000;
 
-
+%%%%
+alpha_old=0;
+alpha_actual=0;
+%%%%%
 
 int_err_flecha=0;
 err_flecha=0;
@@ -84,8 +87,9 @@ for t_actual=0:Ts:Tmax
 %         ref_beta=ref_beta+2*pi;
 %     end
         
-        
-        
+    %%%  
+    alpha_old=alpha_actual;
+    %%%%%
         
     
 
@@ -102,6 +106,16 @@ for t_actual=0:Ts:Tmax
     alpha_actual = valores(1);
     beta_actual=valores(2);
     flecha_actual = valores(3);
+    
+    %%%%%%
+    if alpha_actual>alpha_old
+        Kp_alpha=3000000;
+    elseif alpha_actual<alpha_old
+        Kp_alpha=2000000;
+    end
+    
+    %%%%%%
+    
     
     if beta_actual > pi
         beta_actual= beta_actual-2*pi;
@@ -139,6 +153,7 @@ for t_actual=0:Ts:Tmax
     if k==1, vel_err_alpha=0; % velocidad del error (0 para 1a iteracion)
     else vel_err_alpha=(err_alpha-err_alpha_old)/Ts;
     end
+    
     
    
     int_err_alpha=int_err_alpha+abs(err_alpha);
